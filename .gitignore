@@ -1,0 +1,8 @@
+# Ignore virtual environment and junk files
+venv/
+__pycache__/
+.ipynb_checkpoints/
+*.pkl
+*.h5
+*.log
+.DS_Store
