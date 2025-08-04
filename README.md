@@ -1,60 +1,63 @@
 # 💳 Credit Card Fraud Detection using Tabular Autoencoder
 
-An unsupervised deep learning model to detect fraudulent credit card transactions by identifying anomalies in transaction behavior.
+An unsupervised deep learning model for detecting fraudulent credit card transactions by identifying deviations from normal patterns.
 
 ---
 
 ## 📌 Project Overview
 
-This project aims to detect credit card fraud using a **tabular autoencoder**—a neural network that learns normal transaction patterns and flags suspicious activity based on reconstruction error.
+This project applies a **tabular autoencoder** to credit card fraud detection. Since fraudulent transactions are rare and often unpredictable, a supervised model may not generalize well. Instead, we use **unsupervised anomaly detection**—training only on legitimate transactions, and identifying fraud based on reconstruction error.
 
-* **Dataset**: [Credit Card Fraud Detection on Kaggle](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)
-* **Goal**: Identify anomalies (fraudulent transactions) without needing fraud labels during training.
-* **Method**: Train an autoencoder only on legitimate transactions. Use reconstruction error to identify fraud.
+* **Dataset**: [Kaggle - Credit Card Fraud Detection](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)
+* **Goal**: Detect outliers (fraudulent transactions) without using fraud labels during training.
+* **Approach**: Train an autoencoder to learn the structure of normal transactions. Fraud is detected when reconstruction error exceeds a certain threshold.
 
 ---
 
 ## ⚙️ How It Works
 
-1. **🔍 Data Preprocessing**
+1. ### 🔄 Data Preprocessing
 
-   * Load the dataset from Kaggle (CSV format).
-   * Normalize features using `StandardScaler` for stability.
-   * Use only **non-fraudulent transactions** (`Class == 0`) for training.
-   * Fraudulent transactions (`Class == 1`) are reserved for validation and testing.
+   * Load and clean the dataset.
+   * Normalize features (`V1–V28`, `Amount`) using `StandardScaler`.
+   * Split data into:
 
-2. **🧠 Autoencoder Architecture**
+     * **Training set**: Only non-fraudulent samples (`Class = 0`)
+     * **Test/validation sets**: Include both normal and fraudulent samples
 
-   * A neural network with:
+2. ### 🧠 Autoencoder Model
 
-     * **Encoder**: Compresses the input into a latent representation.
-     * **Decoder**: Reconstructs the input from the latent space.
-   * Trained to minimize reconstruction error (Mean Squared Error).
+   * A neural network consisting of:
 
-3. **🚨 Fraud Detection Logic**
+     * **Encoder**: Compresses the input into a low-dimensional latent space.
+     * **Decoder**: Attempts to reconstruct the original input from the latent space.
+   * The network is trained to minimize **reconstruction error** on normal transactions.
 
-   * After training, use the model to reconstruct both normal and suspicious transactions.
-   * Calculate reconstruction error for each transaction.
-   * Set a **threshold** based on the error distribution or using validation performance.
-   * Flag any transaction with error above the threshold as **potential fraud**.
+3. ### 🚨 Anomaly Detection Logic
 
-4. **📈 Evaluation Metrics**
+   * At inference, all transactions are passed through the autoencoder.
+   * For each transaction, calculate the **reconstruction error** (e.g., MSE).
+   * Define a **threshold**: transactions with error above this value are flagged as fraudulent.
+   * Threshold can be:
 
-   * Compare predictions to true labels using:
+     * Fixed statistically (e.g. 95th percentile of training error)
+     * Tuned based on validation set performance
+
+4. ### 📈 Model Evaluation
+
+   * Evaluate the predictions using true fraud labels (for validation only):
 
      * **Precision**, **Recall**, **F1-Score**
-     * **ROC-AUC Score**
+     * **ROC-AUC**
      * **Confusion Matrix**
-   * Visualize reconstruction error distributions for normal vs. fraud cases.
+   * Visualization of reconstruction error distributions helps understand model behavior.
 
 ---
 
-## 📊 Why Use Autoencoders?
+## 💡 Why This Works
 
-* Handles imbalanced data naturally (no need for oversampling).
-* Detects unseen or evolving fraud patterns.
-* Works in unsupervised or semi-supervised settings where labels are limited or delayed.
+* **Autoencoders learn the structure of normal data**. Anything that deviates from this (like fraud) will reconstruct poorly.
+* No need to rely on fraud labels during training—making this approach practical for real-world systems where fraud evolves and labels are delayed or missing.
+* This method reinforces the idea that **anomalies are relative to the normal patterns the model learns**.
 
 ---
-
-
