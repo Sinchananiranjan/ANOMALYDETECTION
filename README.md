@@ -1,7 +1,3 @@
-Certainly! Here's the updated and polished version of your project README with a **direct Kaggle link** and a clear explanation of how the fraud detection works using an autoencoder:
-
----
-
 # 💳 Credit Card Fraud Detection using Tabular Autoencoder
 
 An unsupervised deep learning model to detect fraudulent credit card transactions by identifying anomalies in transaction behavior.
@@ -60,4 +56,5 @@ This project aims to detect credit card fraud using a **tabular autoencoder**—
 * Works in unsupervised or semi-supervised settings where labels are limited or delayed.
 
 ---
+
 
